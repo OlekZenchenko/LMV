@@ -1,0 +1,47 @@
+// C++ code
+//
+
+bool ledState = false;  
+bool buttonState = false; 
+bool lastButtonState = false; 
+
+void setup() {
+  pinMode(13, OUTPUT);     
+  pinMode(2, INPUT);       
+  Serial.begin(9600);      
+}
+
+void loop() {
+  
+  buttonState = digitalRead(2);  
+
+  if (buttonState && !lastButtonState) { 
+    ledState = !ledState; 
+    if (ledState) {
+      Serial.println("LED is ON (Button)");  
+      Serial.println("LED is OFF (Button)"); 
+    }
+  }
+  
+  lastButtonState = buttonState; 
+
+  
+  digitalWrite(13, ledState ? HIGH : LOW); 
+
+  
+  if (Serial.available() > 0) {
+    String command = Serial.readString();  
+
+    if (command == "on") {        
+      ledState = true;             
+      Serial.println("LED is ON (Serial)");
+    } 
+    else if (command == "off") {   
+      ledState = false;             
+      Serial.println("LED is OFF (Serial)");
+    } 
+    else {
+      Serial.println("Unknown command"); 
+    }
+  }
+}
